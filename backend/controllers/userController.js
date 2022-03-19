@@ -7,6 +7,7 @@ const User = require('../models/userModel')
 // @route   POST /api/users/
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
+    // destructuring the req object
     const { fullname, email, password } = req.body
 
     // check if all fields are empty
@@ -33,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         password: hashedPassword
     })
 
+    // response back newly created user data with generated JWT token
     if (user) {
         res.status(201).json({
             _id: user.id,
@@ -50,10 +52,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
+    // destructuring the req.body object
     const { email, password } = req.body
+
     // check for user email
     const user = await User.findOne({ email })
 
+    // checking for the credentials
     if (user && (await bcrypt.compare(password, user.password))) {
         res.status(200).json({
             _id: user.id,
@@ -71,6 +76,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
+    // destructuring the user object
     const { _id, fullname, email } = await User.findById(req.user.id)
 
     // after login user should get its info

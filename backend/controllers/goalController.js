@@ -6,6 +6,7 @@ const User = require('../models/userModel')
 // @route   Get /api/goals/
 // @access  Private
 const getGoals = asyncHandler(async (req, res) => {
+    // find all goals of a user
     const goals = await Goal.find({ user: req.user.id })
     res.status(200).json(goals)
 })
@@ -15,11 +16,13 @@ const getGoals = asyncHandler(async (req, res) => {
 // @access  Private
 const setGoal = asyncHandler(async (req, res) => {
 
+    // checking for text field not to be empty
     if (!req.body.text) {
         res.status(400)
         throw new Error('please add a text field')
     }
 
+    // populating the database with the new goal
     const goal = await Goal.create({
         text: req.body.text,
         user: req.user.id,
@@ -33,8 +36,10 @@ const setGoal = asyncHandler(async (req, res) => {
 // @route   PUT /api/goals/:id
 // @access  Private
 const updateGoal = asyncHandler(async (req, res) => {
+    // finding the goal by its ID
     const goal = await Goal.findById(req.params.id)
 
+    // if goal not found
     if (!goal) {
         res.status(400)
         throw new Error('goal not found')
@@ -64,8 +69,10 @@ const updateGoal = asyncHandler(async (req, res) => {
 // @route   DELETE /api/goals/:id
 // @access  Private
 const deleteGoal = asyncHandler(async (req, res) => {
+    // find goal by goal ID
     const goal = await Goal.findById(req.params.id)
 
+    // if goal not found
     if (!goal) {
         res.status(400)
         throw new Error('goal not found')
@@ -86,6 +93,7 @@ const deleteGoal = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
+    // removing the goal
     await goal.remove()
 
     res.status(200).json({
